@@ -10,8 +10,8 @@
 ,git
 ,gcc
 ,nodejs_20
+,lua5_1
 ,lua-language-server
-,lua
 ,ripgrep
 ,tree-sitter
 }: with lib;
@@ -27,7 +27,7 @@ stdenvNoCC.mkDerivation rec {
         gcc
         nodejs_20
         lua-language-server
-        (lua.withPackages(ps: with ps; [ luarocks ]))
+        (lua5_1.withPackages(ps: with ps; [ luarocks ]))
         ripgrep
         tree-sitter
         makeWrapper
