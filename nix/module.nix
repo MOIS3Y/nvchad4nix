@@ -52,9 +52,9 @@
       type = types.bool;
       description = ''
         Since the module violates the principle of immutability
-        and copies NvChad to ~/.config/nvchad rather than creating
+        and copies NvChad to ~/.config/nvim rather than creating
         a symbolic link by default, it will create a backup copy of
-        ~/.config/nvchad_%Y_%m_%d_%H_%M_%S.bak when each generation.
+        ~/.config/nvim_%Y_%m_%d_%H_%M_%S.bak when each generation.
         This ensures that the module
         will not delete the configuration accidentally.
         You probably do not need backups, just disable them
@@ -67,15 +67,15 @@
       description = ''
         If you do not want home-manager to manage nvchad configuration, 
         set the false option. In this case, HM will not copy the configuration
-        saved in /nix/store to ~/.config/nvchad.
+        saved in /nix/store to ~/.config/nvim.
         This way you can customize the configuration in the usual way
         by cloning it from the NvChad repository.
-        By default, the ~/.config/nvchad is managed by HM.
+        By default, the ~/.config/nvim is managed by HM.
       '';
     };
   };
   config = with pkgs; with lib; let
-    confDir = "${config.xdg.configHome}/nvchad";
+    confDir = "${config.xdg.configHome}/nvim";
   in mkIf cfg.enable {
     home = {
       packages = [ nvchad ];  
@@ -84,7 +84,7 @@
           if [ -d "${confDir}" ]; then
             ${(
               if cfg.backup then ''
-                backup_name="nvchad_$(${coreutils}/bin/date +'%Y_%m_%d_%H_%M_%S').bak"
+                backup_name="nvim_$(${coreutils}/bin/date +'%Y_%m_%d_%H_%M_%S').bak"
                 ${coreutils}/bin/mv \
                   ${confDir} \
                   ${config.xdg.configHome}/$backup_name

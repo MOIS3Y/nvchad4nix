@@ -2,6 +2,8 @@
 # █░▀█ ▀▄▀ █ █░▀░█   ▀▄▀▄▀ █▀▄ █▀█ █▀▀ █▀▀ ██▄ █▀▄ ▄
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+_CONF_FILE="$HOME/.config/nvim/init.lua"
+
 # Colorize output
 # Usage - $(colorize CYAN "Hello, friend!")
 colorize() {
@@ -22,13 +24,13 @@ colorize() {
 
 
 check_init() {
-    local conf_file="$HOME/.config/nvchad/init.lua" 
+    local conf_file=$_CONF_FILE
 
     if ! [[ -f "$conf_file" ]]; then
         local warning=$(colorize RED "WARNING!")
         echo "${warning} Config file $conf_file doesn't exist"
         echo "Make sure option config.programs.hm-activation = true;"
-        echo "Or copy the NvChad configuration to ~/.config/nvchad manually"
+        echo "Or copy the NvChad configuration to $conf_file manually"
         echo "Exit (1)"
         exit 1
     fi
@@ -36,7 +38,7 @@ check_init() {
 
 
 runner() {
-    nvim -u $HOME/.config/nvchad/init.lua "$@"
+    nvim -u $_CONF_FILE "$@"
 }
 
 
