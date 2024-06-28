@@ -15,12 +15,15 @@
 ,ripgrep
 ,tree-sitter
 ,extraPackages ? []
-,extraConfig ? false
+,extraConfig ? ./starter.nix
 }: with lib;
 stdenvNoCC.mkDerivation rec {
   pname = "nvchad";
   version = "2.5";
-  src = if extraConfig then extraConfig else fetchFromGitHub (import ./starter.nix);
+  src = (
+    if extraConfig == ./starter.nix then fetchFromGitHub (import extraConfig) 
+    else extraConfig
+  );
   nvChadBin = ../bin/nvchad;
   nvChadContrib = ../contrib;
   nativeBuildInputs = (

@@ -8,8 +8,8 @@
   neovim = pkgs.neovim;
   nvchad = pkgs.callPackage ./nvchad.nix {
     inherit neovim;
-    extraPackages = cgf.extraPackages;
-    extraConfig = cfg.config;
+    extraPackages = cfg.extraPackages;
+    extraConfig = cfg.extraConfig;
   };
   in {
   options.programs.nvchad = with lib; {
