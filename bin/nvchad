@@ -37,14 +37,14 @@ check_init() {
 }
 
 
-runner() {
+wrapper() {
     nvim -u $_CONF_FILE "$@"
 }
 
 
 main() {
     check_init
-    runner "$@"
+    wrapper "$@"
 }
 
 
