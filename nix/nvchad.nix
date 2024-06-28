@@ -40,6 +40,7 @@ stdenvNoCC.mkDerivation rec {
     cp -r $src/* $out/config
     install -Dm755 $nvChadBin $out/bin/nvchad
     wrapProgram $out/bin/nvchad --prefix PATH : '${makeBinPath nativeBuildInputs}'
+    runHook postInstall
   '';
   postInstall = ''
     mkdir -p $out/share/{applications,icons/hicolor/scalable/apps}
