@@ -3,30 +3,32 @@
 # -- -- -- -- -- -- -- -- --
 
 { stdenvNoCC
+,fetchFromGitHub
 ,makeWrapper
 ,lib
-,config
-,cfg
 ,git
 ,gcc
-,nodejs_20
+,neovim
+,nodejs
 ,lua5_1
 ,lua-language-server
 ,ripgrep
 ,tree-sitter
+,extraPackages ? []
+,extraConfig ? false
 }: with lib;
 stdenvNoCC.mkDerivation rec {
   pname = "nvchad";
   version = "2.5";
-  src = cfg.src;
+  src = if extraConfig then extraConfig else fetchFromGitHub (import ./starter.nix);
   nvChadBin = ../bin/nvchad;
   nvChadContrib = ../contrib;
   nativeBuildInputs = (
     lists.unique (
-      cfg.dependencies ++ [
+      extraPackages ++ [
         git
         gcc
-        nodejs_20
+        nodejs
         lua-language-server
         (lua5_1.withPackages(ps: with ps; [ luarocks ]))
         ripgrep
@@ -34,7 +36,7 @@ stdenvNoCC.mkDerivation rec {
         makeWrapper
       ]
     )
-  ) ++ [cfg.neovim];
+  ) ++ [ neovim ];
   installPhase = ''
     mkdir -p $out/{bin,config}
     cp -r $src/* $out/config

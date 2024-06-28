@@ -2,24 +2,20 @@
 # █▀█ █░▀░█ ░░ █░▀░█ █▄█ █▄▀ █▄█ █▄▄ ██▄ ▄
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -
 
-{ config, pkgs, lib, ... }: 
-  let
-    cfg = config.programs.nvchad;
-    src = pkgs.fetchFromGitHub {
-      owner = "NvChad";
-      repo = "starter";
-      rev = "41c5b467339d34460c921a1764c4da5a07cdddf7";
-      sha256 = "sha256-yxZTxFnw5oV/76g+qkKs7UIwgkpD+LkN/6IJxiV9iRY=";
-      name = "nvchad-2.5";
-    };
-    nvchad = pkgs.callPackage ./nvchad.nix { inherit config; inherit cfg; };
+{ config, pkgs, lib, ... }: let
+  cfg = config.programs.nvchad;
+  extraPackages = [];
+  neovim = pkgs.neovim;
+  nvchad = pkgs.callPackage ./nvchad.nix {
+    inherit neovim;
+    extraPackages = cgf.extraPackages;
+    extraConfig = cfg.config;
+  };
   in {
   options.programs.nvchad = with lib; {
-
     enable = mkEnableOption "Enable NvChad";
-
-    dependencies = mkOption {
-      default = [];
+    extraPackages = mkOption {
+      default = extraPackages;
       type = types.listOf types.package;
       description = ''
         List of runtime dependencies.
@@ -30,15 +26,15 @@
       '';
     };
     neovim = mkOption {
-      default = pkgs.neovim;
+      default = neovim;
       type = types.package;
       description = ''
         Neovim package name in case you are not using pkgs.neovim from 
         unstable nixpkgs
       '';
     };
-    src = mkOption {
-      default = builtins.toPath src;
+    extraConfig = mkOption {
+      default = builtins.toPath (fetchFromGitHub (import ./starter.nix));
       type = types.pathInStore;
       description = ''
         Your own NvChad configuration based on the started repository.
