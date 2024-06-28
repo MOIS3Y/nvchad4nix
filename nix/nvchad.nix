@@ -20,6 +20,7 @@ stdenvNoCC.mkDerivation rec {
   version = "2.5";
   src = cfg.src;
   nvChadBin = ../bin/nvchad;
+  nvChadContrib = ../contrib;
   nativeBuildInputs = (
     lists.unique (
       cfg.dependencies ++ [
@@ -39,5 +40,10 @@ stdenvNoCC.mkDerivation rec {
     cp -r $src/* $out/config
     install -Dm755 $nvChadBin $out/bin/nvchad
     wrapProgram $out/bin/nvchad --prefix PATH : '${makeBinPath nativeBuildInputs}'
+  '';
+  postInstall = ''
+    mkdir -p $out/share/{applications,icons/hicolor/scalable/apps}
+    cp $nvChadContrib/NvChad.desktop $out/share/applications
+    cp $nvChadContrib/nvchad.svg $out/share/icons/hicolor/scalable/apps
   '';
 }
