@@ -17,29 +17,34 @@
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
   };
 
-  outputs = { self, nixpkgs }: 
-  let
-    lib = nixpkgs.lib;
-    genSystems = lib.genAttrs [
-      "aarch64-linux"
+  outputs = { self, nixpkgs }: let
+    supportedSystems = [
       "x86_64-linux"
       "x86_64-darwin"
+      "aarch64-linux"
       "aarch64-darwin"
     ];
-    pkgsFor = genSystems (system:
-      import nixpkgs {
-        inherit system;
-        overlays = [ self.overlays.nvchad ];
-      }
-    );
-  in {
-    packages = genSystems (system:
-      (self.overlays.default pkgsFor.${system} pkgsFor.${system})
-      // { default = self.packages.${system}.nvchad; }
-    );
-    overlays = (import ./nix/overlays.nix { })
-    // { default = self.overlays.nvchad ; };
-    homeManagerModules.nvchad = import ./nix/module.nix;
-    homeManagerModule = self.homeManagerModules.nvchad;
+    forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+    nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
+in {
+  # Executed by `nix build .#<name>`
+  packages = forAllSystems (system: let
+      pkgs = nixpkgsFor.${system};
+  in rec {
+    nvchad = pkgs.callPackage ./nix/nvchad.nix {};
+    default = nvchad;
+  });
+  # Executed by `nix run .#<name>
+  apps = forAllSystems (system: rec {
+    nvchad = {
+      type = "app";
+      program = "${self.packages.${system}.default}/bin/nvchad";
+    };
+    default = nvchad;
+  });
+  overlays = (import ./nix/overlays.nix { })
+  // { default = self.overlays.nvchad ; };
+  homeManagerModules.nvchad = import ./nix/module.nix;
+  homeManagerModule = self.homeManagerModules.nvchad;
   };
 }
