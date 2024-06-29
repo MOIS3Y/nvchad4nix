@@ -15,37 +15,56 @@
   options.programs.nvchad = with lib; {
     enable = mkEnableOption "Enable NvChad";
     extraPackages = mkOption {
-      default = extraPackages;
       type = types.listOf types.package;
+      default = extraPackages;
       description = ''
-        List of runtime dependencies.
+        List of additional packages available for NvChad as runtime dependencies
         NvChad extensions assume that the libraries it need
         will be available globally.
         By default, all dependencies for the starting configuration are included.
-        Overriding the option will expand the list of dependencies.
+        Overriding the option will expand this list.
+      '';
+      example = literalExpression ''
+        with pkgs; [
+          nodePackages.bash-language-server
+          emmet-language-server
+          nixd
+          (python3.withPackages(ps: with ps; [
+            python-lsp-server
+            flake8
+          ]))
+        ];
       '';
     };
     neovim = mkOption {
-      default = neovim;
       type = types.package;
-      description = ''
-        Neovim package name in case you are not using pkgs.neovim from 
-        unstable nixpkgs
-      '';
+      default = neovim;
+      defaultText = literalExpression "pkgs.neovim";
+      description = "neovim package for use under nvchad wrapper";
     };
     extraConfig = mkOption {
-      default = builtins.toPath (fetchFromGitHub (import ./starter.nix));
       type = types.pathInStore;
+      default = builtins.toPath (fetchFromGitHub (import ./starter.nix));
       description = ''
-        Your own NvChad configuration based on the started repository.
+        Your own NvChad configuration based on the starter repository.
+        https://github.com/NvChad/starter
         Overriding the option will override the default configuration
         included in the module. This should be the path to the nix store.
         The easiest way is to use pkgs.fetchFromGitHub
       '';
+      example = literalExpression ''
+        pkgs.fetchFromGitHub {
+          owner = "NvChad";
+          repo = "starter";
+          rev = "41c5b467339d34460c921a1764c4da5a07cdddf7";
+          sha256 = "sha256-yxZTxFnw5oV/76g+qkKs7UIwgkpD+LkN/6IJxiV9iRY=";
+          name = "nvchad-2.5-starter";
+        };
+      '';
     };
     backup = mkOption {
-      default = true;
       type = types.bool;
+      default = true;
       description = ''
         Since the module violates the principle of immutability
         and copies NvChad to ~/.config/nvim rather than creating
@@ -58,8 +77,8 @@
       '';
     };
     hm-activation = mkOption {
-      default = true;
       type = types.bool;
+      default = true;
       description = ''
         If you do not want home-manager to manage nvchad configuration, 
         set the false option. In this case, HM will not copy the configuration
