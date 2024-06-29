@@ -28,6 +28,7 @@ stdenvNoCC.mkDerivation rec {
   );
   nvChadBin = ../bin/nvchad.sh;
   nvChadContrib = ../contrib;
+  buildInputs = [ makeWrapper ];
   nativeBuildInputs = (
     lists.unique (
       extraPackages ++ [
@@ -40,7 +41,6 @@ stdenvNoCC.mkDerivation rec {
         (lua5_1.withPackages(ps: with ps; [ luarocks ]))
         ripgrep
         tree-sitter
-        makeWrapper
       ]
     )
   ) ++ [ neovim ];
