@@ -6,6 +6,8 @@
 ,fetchFromGitHub
 ,makeWrapper
 ,lib
+,coreutils
+,findutils
 ,git
 ,gcc
 ,neovim
@@ -24,11 +26,13 @@ stdenvNoCC.mkDerivation rec {
     if extraConfig == ./starter.nix then fetchFromGitHub (import extraConfig) 
     else extraConfig
   );
-  nvChadBin = ../bin/nvchad;
+  nvChadBin = ../bin/nvchad.sh;
   nvChadContrib = ../contrib;
   nativeBuildInputs = (
     lists.unique (
       extraPackages ++ [
+        coreutils
+        findutils
         git
         gcc
         nodejs
