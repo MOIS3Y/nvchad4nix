@@ -56,4 +56,13 @@ stdenvNoCC.mkDerivation rec {
     cp $nvChadContrib/NvChad.desktop $out/share/applications
     cp $nvChadContrib/nvchad.svg $out/share/icons/hicolor/scalable/apps
   '';
+  meta = {
+    description = ''
+      Blazing fast Neovim config providing solid defaults and a beautiful UI
+    '';
+    homepage = "https://nvchad.com/";
+    license = licenses.gpl3;
+    mainProgram = "nvchad";
+    maintainers = with maintainers; [ MOIS3Y ];
+  };
 }
