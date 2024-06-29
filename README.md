@@ -66,6 +66,23 @@ If you still need to add NvChad to your configuration, welcome!
 - if you do not pass any parameters only extraPackages for starter configuration are included
 
 
+# Quick use without installation to try
+
+```console
+nix run github:MOIS3Y/nvchad4nix/v2.5#nvchad
+```
+
+⚠️**WARNING**⚠️
+
+Run the command above if you are not using your `neovim` configuration!
+
+- If you already have a `neovim` configuration in `~/.config/nvim` and `init.lua` is present there
+nvchad will not copy the configuration to the home directory and will probably not start correctly
+- If there is no `init.lua` in `~/.config/nvim` but there are any other files, this will overwrite
+`~/.config/nvim` with the `NvChad starter` configuration
+- Your current configuration will be saved in `~/.config/nvim/nvim_%Y_%m_%d_%H_%M_%S.bak`
+
+
 # Installation
 
 To install it you **must have flake enabled** and your NixOS configuration
@@ -137,8 +154,6 @@ In the example below, the home manager is installed as a NixOS module
       };
     };
   };
-}
-
 ```
 
 Here's my full [nixos-configurations](https://github.com/MOIS3Y/nixos-configurations/blob/main/flake.nix) flake
@@ -165,6 +180,44 @@ Somewhere in your `configuration.nix`
   # ...
 }
 ```
+
+Or add directly to `flake.nix`
+
+```nix
+  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+    let
+      system = "x86_64-linux";
+      lib = nixpkgs.lib;
+      pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
+      extraSpecialArgs = { inherit system; inherit inputs; };  # <- passing inputs to the attribute set for home-manager
+      specialArgs = { inherit system; inherit inputs; };       # <- passing inputs to the attribute set for NixOS (optional)
+    in {
+    nixosConfigurations = {
+      desktop-laptop = lib.nixosSystem {
+        modules = [
+          inherit specialArgs;           # <- this will make inputs available anywhere in the NixOS configuration
+          ./hosts/desktop-laptop/configuration.nix
+          {  # <- # example to add the overlay to Nixpkgs:
+            nixpkgs = {
+              overlays = [
+                inputs.nvchad4nix.overlays.default
+              ];
+            };
+          }
+          home-manager.nixosModules.home-manager {
+            home-manager = {
+              inherit extraSpecialArgs;  # <- this will make inputs available anywhere in the HM configuration
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              users.stepan = import ./homes/stepan_laptop/home.nix;
+            };
+          }
+        ];
+      };
+    };
+  };
+```
+
 
 Now you can call the package anywhere as a package from nixpkgs
 
