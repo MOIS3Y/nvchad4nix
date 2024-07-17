@@ -268,7 +268,7 @@ Or with customization of options:
         flake8
       ]))
     ];
-    extraConfig = pkgs.fetchFromGitHub {  you can # set your repo here
+    extraConfig = pkgs.fetchFromGitHub {  # <- you can set your repo here
       owner = "NvChad";
       repo = "starter";
       rev = "41c5b467339d34460c921a1764c4da5a07cdddf7";
@@ -293,7 +293,7 @@ to flake.nix `inputs`
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # NvChad staff:
+    # NvChad:
     nvchad4nix = {
       url = "github:MOIS3Y/nvchad4nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -378,7 +378,7 @@ This way you can customize the configuration in the usual way
 by cloning it from the NvChad repository.
 By default, the ~/.config/nvim is managed by HM.
 
-##### hm-activation (optional)
+##### backup (optional)
 
 `true` or `false`
 
