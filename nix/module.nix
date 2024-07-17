@@ -44,7 +44,7 @@
     };
     extraConfig = mkOption {
       type = types.pathInStore;
-      default = builtins.toPath (fetchFromGitHub (import ./starter.nix));
+      default = builtins.toPath (pkgs.fetchFromGitHub (import ./starter.nix));
       description = ''
         Your own NvChad configuration based on the starter repository.
         https://github.com/NvChad/starter
