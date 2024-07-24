@@ -92,6 +92,22 @@
   config = with pkgs; with lib; let
     confDir = "${config.xdg.configHome}/nvim";
   in mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = !config.programs.neovim.enable;
+        message = ''
+          NvChad provides a neovim binary, please choose which you want to use.
+          
+          Use Default neovim binary:
+          programs.neovim.enable = true;
+
+          Use Nvchad neovim binary:
+          programs.nvchad.enable = true;
+
+          You cannot use both at the same time.
+        '';
+      }
+    ];
     home = {
       packages = [ nvchad ];  
       activation = mkIf cfg.hm-activation {

@@ -29,7 +29,7 @@
 in {
   # Executed by `nix build .#<name>`
   packages = forAllSystems (system: let
-      pkgs = nixpkgsFor.${system};
+    pkgs = nixpkgsFor.${system};
   in rec {
     nvchad = pkgs.callPackage ./nix/nvchad.nix {};
     default = nvchad;
@@ -38,13 +38,16 @@ in {
   apps = forAllSystems (system: rec {
     nvchad = {
       type = "app";
-      program = "${self.packages.${system}.default}/bin/nvchad";
+      program = "${self.packages.${system}.default}/bin/nvim";
     };
     default = nvchad;
   });
   overlays = (import ./nix/overlays.nix { })
   // { default = self.overlays.nvchad ; };
-  homeManagerModules.nvchad = import ./nix/module.nix;
+  homeManagerModules = rec {
+    nvchad = import ./nix/module.nix;
+    default = nvchad;
+  };
   homeManagerModule = self.homeManagerModules.nvchad;
   };
 }

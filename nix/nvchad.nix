@@ -47,13 +47,13 @@ stdenvNoCC.mkDerivation rec {
   installPhase = ''
     mkdir -p $out/{bin,config}
     cp -r $src/* $out/config
-    install -Dm755 $nvChadBin $out/bin/nvchad
-    wrapProgram $out/bin/nvchad --prefix PATH : '${makeBinPath nativeBuildInputs}'
+    install -Dm755 $nvChadBin $out/bin/nvim
+    wrapProgram $out/bin/nvim --prefix PATH : '${makeBinPath nativeBuildInputs}'
     runHook postInstall
   '';
   postInstall = ''
     mkdir -p $out/share/{applications,icons/hicolor/scalable/apps}
-    cp $nvChadContrib/NvChad.desktop $out/share/applications
+    cp $nvChadContrib/nvim.desktop $out/share/applications
     cp $nvChadContrib/nvchad.svg $out/share/icons/hicolor/scalable/apps
   '';
   meta = {
@@ -62,7 +62,7 @@ stdenvNoCC.mkDerivation rec {
     '';
     homepage = "https://nvchad.com/";
     license = licenses.gpl3;
-    mainProgram = "nvchad";
+    mainProgram = "nvim";
     maintainers = with maintainers; [ MOIS3Y ];
   };
 }
