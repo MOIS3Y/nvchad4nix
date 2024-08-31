@@ -1,13 +1,12 @@
 # nvchad4nix
 
-![logo](https://camo.githubusercontent.com/0c8e304d05532523126d58c26c874afeefed5df97071e7429dd43d5e8f9b705f/68747470733a2f2f6e76636861642e636f6d2f73637265656e73686f74732f6f6e656461726b2e77656270)
+![logo](https://nvchad.com/screenshots/onedark.webp)
 
 ## What is it?
 
 > This repository is my draft.
 I offered the NvChad community an option to add NvChad declaratively to the Nix configuration.
-They have created [NvChad/nix repo](https://github.com/MOIS3Y/nix) for this in the organization and should publish my PR soon.
-As of now Jul 2024 I am using this repository in my [NixOS configuration](https://github.com/MOIS3Y/nixos-configurations).
+Current and highly advanced repository maintained by the nix-community [here](https://github.com/nix-community/nix4nvchad)
 
 
 The repository contains nix flake to install the [NvChad](https://nvchad.com/)
