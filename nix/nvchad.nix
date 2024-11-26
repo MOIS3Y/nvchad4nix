@@ -18,10 +18,17 @@
 ,tree-sitter
 ,extraPackages ? []
 ,extraConfig ? ./starter.nix
-}: with lib;
-stdenvNoCC.mkDerivation rec {
+}: let
+  inherit (lib)
+    lists
+    makeBinPath
+    licenses
+    maintainers
+    ;
+  in
+  stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "nvchad";
-  version = "2.5";
+  version = "3.0";
   src = (
     if extraConfig == ./starter.nix then fetchFromGitHub (import extraConfig) 
     else extraConfig
@@ -48,7 +55,7 @@ stdenvNoCC.mkDerivation rec {
     mkdir -p $out/{bin,config}
     cp -r $src/* $out/config
     install -Dm755 $nvChadBin $out/bin/nvim
-    wrapProgram $out/bin/nvim --prefix PATH : '${makeBinPath nativeBuildInputs}'
+    wrapProgram $out/bin/nvim --prefix PATH : '${makeBinPath finalAttrs.nativeBuildInputs}'
     runHook postInstall
   '';
   postInstall = ''
@@ -65,4 +72,4 @@ stdenvNoCC.mkDerivation rec {
     mainProgram = "nvim";
     maintainers = with maintainers; [ MOIS3Y ];
   };
-}
+})
