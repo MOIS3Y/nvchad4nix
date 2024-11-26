@@ -1,7 +1,7 @@
 {
   owner = "NvChad";
   repo = "starter";
-  rev = "41c5b467339d34460c921a1764c4da5a07cdddf7";
-  sha256 = "sha256-yxZTxFnw5oV/76g+qkKs7UIwgkpD+LkN/6IJxiV9iRY=";
-  name = "nvchad-2.5-starter";
+  rev = "d0c602f5f155d4d1261609219e9b8a61e936d681";
+  sha256 = "sha256-SVpep7lVX0isYsUtscvgA7Ga3YXt/2jwQQCYkYadjiM=";
+  name = "nvchad-3.0-starter";
 }
