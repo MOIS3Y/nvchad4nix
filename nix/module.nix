@@ -3,6 +3,14 @@
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -
 
 { config, pkgs, lib, ... }: let
+  inherit (lib)
+    mkEnableOption
+    types
+    mkOption
+    literalExpression
+    mkIf
+    hm
+    ;
   cfg = config.programs.nvchad;
   nvchad = pkgs.callPackage ./nvchad.nix {
     neovim = cfg.neovim;
@@ -10,7 +18,7 @@
     extraConfig = cfg.extraConfig;
   };
   in {
-  options.programs.nvchad = with lib; {
+  options.programs.nvchad = {
     enable = mkEnableOption "Enable NvChad";
     extraPackages = mkOption {
       type = types.listOf types.package;
@@ -54,9 +62,9 @@
         pkgs.fetchFromGitHub {
           owner = "NvChad";
           repo = "starter";
-          rev = "41c5b467339d34460c921a1764c4da5a07cdddf7";
-          sha256 = "sha256-yxZTxFnw5oV/76g+qkKs7UIwgkpD+LkN/6IJxiV9iRY=";
-          name = "nvchad-2.5-starter";
+          rev = "d0c602f5f155d4d1261609219e9b8a61e936d681";
+          sha256 = "sha256-SVpep7lVX0isYsUtscvgA7Ga3YXt/2jwQQCYkYadjiM=";
+          name = "nvchad-3.0-starter";
         };
       '';
     };
@@ -87,19 +95,22 @@
       '';
     };
   };
-  config = with pkgs; with lib; let
+  config = let
     confDir = "${config.xdg.configHome}/nvim";
-  in mkIf cfg.enable {
+    coreutils = pkgs.coreutils;
+    findutils = pkgs.findutils;
+  in
+  mkIf cfg.enable {
     assertions = [
       {
         assertion = !config.programs.neovim.enable;
         message = ''
           NvChad provides a neovim binary, please choose which you want to use.
           
-          Use Default neovim binary:
+          Use the default neovim binary:
           programs.neovim.enable = true;
 
-          Use Nvchad neovim binary:
+          Use  the Nvchad neovim binary:
           programs.nvchad.enable = true;
 
           You cannot use both at the same time.
@@ -125,7 +136,7 @@
           fi
         '';
         copyNvChad = hm.dag.entryAfter ["writeBoundary"] ''
-          ${coreutils}/bin/mkdir ${confDir}
+          ${coreutils}/bin/mkdir -p ${confDir}
           ${coreutils}/bin/cp -r ${nvchad}/config/* ${confDir}
           for file_or_dir in $(${findutils}/bin/find ${confDir}); do
             if [ -d "$file_or_dir" ]; then
